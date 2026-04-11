@@ -1,0 +1,1 @@
+com.digibuddy.core

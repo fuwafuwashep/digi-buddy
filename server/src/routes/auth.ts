@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import * as c from '../controllers/authController';
+const r = Router();
+r.post('/send-otp',        c.sendOtp);
+r.post('/verify-otp',      c.verifyOtp);
+r.post('/register',        c.register);
+r.post('/login',           c.login);
+r.post('/refresh',         c.refreshToken);
+r.post('/complete-profile',c.completeProfile);
+export default r;

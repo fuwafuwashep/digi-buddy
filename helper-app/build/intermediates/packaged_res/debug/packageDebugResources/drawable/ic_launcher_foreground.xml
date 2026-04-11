@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!--
+        Helper app icon: a person with a wrench/support symbol
+        representing a digital helper / support agent.
+    -->
+    <!-- Head circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,30 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0" />
+    <!-- Body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,58 Q38,46 54,46 Q70,46 70,58 L70,72 L38,72 Z" />
+    <!-- Wrench / tool symbol overlay -->
+    <path
+        android:fillColor="#FF009688"
+        android:pathData="M62,52 L64,50 L66,52 L64,54 Z M63,54 L63,65 L65,65 L65,54 Z" />
+    <!-- Headset arc -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M42,36 Q42,28 54,28 Q66,28 66,36"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3" />
+    <!-- Left ear -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,35 L40,41 L44,41 L44,35 Z" />
+    <!-- Right ear -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M64,35 L64,41 L68,41 L68,35 Z" />
+</vector>

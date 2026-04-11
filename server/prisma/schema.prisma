@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  phone      String?  @unique
+  email      String?  @unique
+  password   String?
+  name       String
+  avatar     String?
+  role       String   @default("CUSTOMER")
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  bookingsAsCustomer Booking[]     @relation("CustomerBookings")
+  ratingsGiven       Rating[]      @relation("CustomerRatings")
+  sentMessages       ChatMessage[] @relation("SentMessages")
+  helperProfile      HelperProfile?
+  otpCodes           OtpCode[]
+
+  @@map("users")
+}
+
+model HelperProfile {
+  id           String  @id @default(uuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio          String?
+  skills       String  @default("[]")
+  hourlyRate   Float?
+  isAvailable  Boolean @default(false)
+
+  workAddress   String?
+  workLatitude  Float?
+  workLongitude Float?
+  workRadius    Float   @default(5.0)
+
+  totalSessions Int    @default(0)
+  totalEarnings Float  @default(0.0)
+  avgRating     Float  @default(0.0)
+  ratingCount   Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+  ratings  Rating[]
+
+  @@map("helper_profiles")
+}
+
+model Booking {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   User          @relation("CustomerBookings", fields: [customerId], references: [id])
+  helperId   String
+  helper     HelperProfile @relation(fields: [helperId], references: [id])
+  status     String   @default("PENDING")
+  issue      String
+
+  meetAddress   String?
+  meetLatitude  Float?
+  meetLongitude Float?
+  meetTime      DateTime?
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  duration    Int?
+  totalCost   Float?
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatRoom ChatRoom?
+  rating   Rating?
+
+  @@map("bookings")
+}
+
+model ChatRoom {
+  id        String        @id @default(uuid())
+  bookingId String        @unique
+  booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("chat_rooms")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  roomId    String
+  room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  content   String
+  type      String   @default("TEXT")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("chat_messages")
+}
+
+model Rating {
+  id         String        @id @default(uuid())
+  bookingId  String        @unique
+  booking    Booking       @relation(fields: [bookingId], references: [id])
+  customerId String
+  customer   User          @relation("CustomerRatings", fields: [customerId], references: [id])
+  helperId   String
+  helper     HelperProfile @relation(fields: [helperId], references: [id])
+  stars      Int
+  comment    String?
+  createdAt  DateTime      @default(now())
+
+  @@map("ratings")
+}
+
+model OtpCode {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String
+  type      String
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("otp_codes")
+}

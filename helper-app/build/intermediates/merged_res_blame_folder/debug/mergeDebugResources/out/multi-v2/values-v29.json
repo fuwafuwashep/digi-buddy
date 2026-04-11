@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.digibuddy.helper.helper-app-mergeDebugResources-77:/values-v29/values-v29.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Fuwa\\.gradle\\caches\\8.11.1\\transforms\\0780f1b1793d429d2f3c06a140d0ed88\\transformed\\core-splashscreen-1.0.1\\res\\values-v29\\values-v29.xml",
+                    "from": {
+                        "startLines": "2,7",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,374",
+                        "endLines": "6,8",
+                        "endColumns": "12,12",
+                        "endOffsets": "369,464"
+                    }
+                }
+            ]
+        }
+    ]
+}

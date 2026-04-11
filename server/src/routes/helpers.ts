@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import * as c from '../controllers/helperController';
+import { authenticate } from '../middleware/auth';
+const r = Router();
+r.get('/nearby',        c.getNearbyHelpers);
+r.get('/search',        c.searchHelpers);
+r.get('/:id',           c.getHelperById);
+r.use(authenticate);
+r.put('/profile',       c.updateHelperProfile);
+r.put('/availability',  c.updateAvailability);
+r.put('/work-location', c.updateWorkLocation);
+export default r;

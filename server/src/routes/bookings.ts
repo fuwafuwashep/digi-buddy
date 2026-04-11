@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import * as c from '../controllers/bookingController';
+import { authenticate } from '../middleware/auth';
+const r = Router();
+r.use(authenticate);
+r.post('/',                    c.createBooking);
+r.get('/',                     c.getMyBookings);
+r.get('/:id',                  c.getBookingById);
+r.put('/:id/status',           c.updateBookingStatus);
+r.put('/:id/meet-location',    c.updateMeetLocation);
+export default r;

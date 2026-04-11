@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Backup rules for DigiBuddy Helper app.
+   See https://developer.android.com/guide/topics/data/autobackup
+   Note: This file is ignored for devices older than API 31.
+-->
+<full-backup-content>
+    <!-- Exclude auth tokens from backup for security -->
+    <exclude domain="sharedpref" path="user_prefs.preferences_pb" />
+</full-backup-content>

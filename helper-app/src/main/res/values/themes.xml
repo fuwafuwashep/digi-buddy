@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.DigiBuddyHelper" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+    <style name="Theme.DigiBuddyHelper.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#009688</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.DigiBuddyHelper</item>
+    </style>
+</resources>
