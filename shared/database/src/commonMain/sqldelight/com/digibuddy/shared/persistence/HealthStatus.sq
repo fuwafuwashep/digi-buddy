@@ -1,0 +1,17 @@
+CREATE TABLE HealthStatus (
+    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    status TEXT NOT NULL,
+    checkedAtEpochSeconds INTEGER NOT NULL
+);
+
+upsertHealthStatus:
+INSERT OR REPLACE INTO HealthStatus(id, status, checkedAtEpochSeconds)
+VALUES (1, ?, ?);
+
+selectHealthStatus:
+SELECT status, checkedAtEpochSeconds
+FROM HealthStatus
+WHERE id = 1;
+
+clearHealthStatus:
+DELETE FROM HealthStatus;

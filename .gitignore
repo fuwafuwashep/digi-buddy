@@ -1,0 +1,115 @@
+# Gradle and Kotlin
+.gradle/
+.kotlin/
+.konan/
+**/build/
+**/.gradle/
+*.class
+
+# Gradle local configuration (wrapper files remain tracked)
+gradle.properties.local
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+output-metadata.json
+
+# Android signing and service configuration
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+GoogleService-Info.plist
+
+# IntelliJ IDEA and Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Xcode and Swift Package Manager user/build data
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM/
+*.dSYM.zip
+**/*.xcodeproj/xcuserdata/
+**/*.xcworkspace/xcuserdata/
+**/*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+**/.swiftpm/xcode/package.xcworkspace/xcuserdata/
+.build/
+Pods/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Docker local overrides and runtime data
+docker-compose.override.yml
+docker-compose.override.yaml
+compose.override.yml
+compose.override.yaml
+.docker/
+infrastructure/docker/data/
+infrastructure/docker/volumes/
+
+# Local databases and journals
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3
+backend/data/
+
+# Environment files (safe templates remain trackable)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Secrets, credentials, and generated certificates
+secrets/
+**/generated-secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+*.cer
+*.crt
+credentials.json
+service-account*.json
+
+# Infrastructure state may contain credentials
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Logs, temporary files, and local tool state
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.agents/

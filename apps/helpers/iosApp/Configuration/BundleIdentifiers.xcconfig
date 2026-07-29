@@ -1,0 +1,3 @@
+// Placeholder only. Change this one value when a final bundle identifier is assigned.
+DIGIBUDDY_HELPERS_BUNDLE_ID = com.digibuddy.helpers
+PRODUCT_BUNDLE_IDENTIFIER = $(DIGIBUDDY_HELPERS_BUNDLE_ID)

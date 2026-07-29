@@ -1,0 +1,133 @@
+-- Fictional product fixtures only. Names and biographies do not represent real people.
+INSERT INTO zip_code_location (zip_code, city, region, centroid) VALUES
+('60601', 'Chicago', 'IL', ST_SetSRID(ST_MakePoint(-87.6229, 41.8864), 4326)::geography),
+('60614', 'Chicago', 'IL', ST_SetSRID(ST_MakePoint(-87.6505, 41.9227), 4326)::geography),
+('60618', 'Chicago', 'IL', ST_SetSRID(ST_MakePoint(-87.7037, 41.9464), 4326)::geography),
+('60640', 'Chicago', 'IL', ST_SetSRID(ST_MakePoint(-87.6622, 41.9722), 4326)::geography),
+('60657', 'Chicago', 'IL', ST_SetSRID(ST_MakePoint(-87.6533, 41.9400), 4326)::geography),
+('60201', 'Evanston', 'IL', ST_SetSRID(ST_MakePoint(-87.6947, 42.0562), 4326)::geography),
+('60302', 'Oak Park', 'IL', ST_SetSRID(ST_MakePoint(-87.7895, 41.8930), 4326)::geography),
+('60540', 'Naperville', 'IL', ST_SetSRID(ST_MakePoint(-88.1473, 41.7662), 4326)::geography);
+
+INSERT INTO service_category (id, slug, name, description, display_order) VALUES
+('20000000-0000-0000-0000-000000000001', 'computer-help', 'Computer help', 'Help using and troubleshooting desktop and laptop computers.', 1),
+('20000000-0000-0000-0000-000000000002', 'phone-tablet-help', 'Phone and tablet help', 'Help using smartphones and tablets.', 2),
+('20000000-0000-0000-0000-000000000003', 'wifi-internet', 'Wi-Fi and internet', 'Help connecting devices and improving home internet setup.', 3),
+('20000000-0000-0000-0000-000000000004', 'printer-setup', 'Printer setup', 'Printer installation, connection, and basic troubleshooting.', 4),
+('20000000-0000-0000-0000-000000000005', 'smart-tv-streaming', 'Smart television and streaming', 'Television, streaming-device, and service setup.', 5),
+('20000000-0000-0000-0000-000000000006', 'smart-home', 'Smart-home devices', 'Setup and guidance for connected home devices.', 6),
+('20000000-0000-0000-0000-000000000007', 'email-accounts', 'Email and account help', 'Help using email and managing online accounts.', 7),
+('20000000-0000-0000-0000-000000000008', 'password-security', 'Password and security help', 'Safer passwords, updates, and account-security guidance.', 8),
+('20000000-0000-0000-0000-000000000009', 'software-installation', 'Software installation', 'Install and configure trusted software.', 9),
+('20000000-0000-0000-0000-00000000000a', 'data-transfer-backup', 'Data transfer and backup', 'Move files and set up practical backups.', 10),
+('20000000-0000-0000-0000-00000000000b', 'device-setup', 'Device setup', 'Set up a new computer, phone, tablet, or accessory.', 11),
+('20000000-0000-0000-0000-00000000000c', 'technology-lessons', 'Technology lessons', 'Patient one-to-one lessons at the customer''s pace.', 12),
+('20000000-0000-0000-0000-00000000000d', 'other', 'Other technology problem', 'Technology help that does not fit another category.', 13);
+
+INSERT INTO skill (id, slug, name) VALUES
+('30000000-0000-0000-0000-000000000001', 'windows', 'Windows'),
+('30000000-0000-0000-0000-000000000002', 'macos', 'macOS'),
+('30000000-0000-0000-0000-000000000003', 'iphone-ipad', 'iPhone and iPad'),
+('30000000-0000-0000-0000-000000000004', 'android', 'Android phones and tablets'),
+('30000000-0000-0000-0000-000000000005', 'home-networking', 'Home networking'),
+('30000000-0000-0000-0000-000000000006', 'printers', 'Printers and scanners'),
+('30000000-0000-0000-0000-000000000007', 'streaming', 'Streaming devices'),
+('30000000-0000-0000-0000-000000000008', 'smart-home', 'Smart-home devices'),
+('30000000-0000-0000-0000-000000000009', 'online-safety', 'Online safety'),
+('30000000-0000-0000-0000-00000000000a', 'backup', 'Backup and file transfer');
+
+INSERT INTO language (code, name) VALUES
+('en', 'English'), ('es', 'Spanish'), ('pl', 'Polish'), ('zh-Hans', 'Mandarin Chinese'), ('fr', 'French');
+
+INSERT INTO helper_profile
+(id, display_name, headline, biography, account_status, approval_status, verification_status, catalog_visible, seed_data, created_at, updated_at) VALUES
+('10000000-0000-0000-0000-000000000001', 'Maya Rowan', 'Patient help for everyday devices', 'Maya explains each step in plain language and writes down instructions for later.', 'ACTIVE', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000002', 'Elias Park', 'Home internet and computer setup', 'Elias focuses on reliable home networks, computers, and printers without unnecessary upgrades.', 'ACTIVE', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000003', 'Nora Bell', 'Friendly phone, tablet, and account lessons', 'Nora offers calm remote and in-person lessons for phones, tablets, email, and video calls.', 'ACTIVE', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000004', 'Theo Linden', 'Streaming and smart-home guidance', 'Theo helps customers connect televisions, streaming services, speakers, and smart-home devices.', 'ACTIVE', 'APPROVED', 'PENDING', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000005', 'Samira Vale', 'Online safety and backup specialist', 'Samira teaches safer account habits and creates understandable backup and file-transfer plans.', 'ACTIVE', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000006', 'Jonah Reed', 'Flexible remote technology help', 'Jonah handles a broad range of remote computer and software questions with concise instructions.', 'ACTIVE', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000007', 'Lina Marsh', 'New helper awaiting approval', 'This fictional profile exists to verify that pending helpers never appear in search.', 'ACTIVE', 'PENDING', 'VERIFIED', TRUE, TRUE, NOW(), NOW()),
+('10000000-0000-0000-0000-000000000008', 'Owen Lake', 'Unavailable catalog fixture', 'This fictional profile exists to verify that suspended helpers never appear in search.', 'SUSPENDED', 'APPROVED', 'VERIFIED', TRUE, TRUE, NOW(), NOW());
+
+INSERT INTO helper_performance_summary VALUES
+('10000000-0000-0000-0000-000000000001', 4.92, 84, 126, 18, NOW()),
+('10000000-0000-0000-0000-000000000002', 4.78, 51, 93, 32, NOW()),
+('10000000-0000-0000-0000-000000000003', 4.98, 37, 61, 12, NOW()),
+('10000000-0000-0000-0000-000000000004', 4.65, 22, 48, 44, NOW()),
+('10000000-0000-0000-0000-000000000005', 4.88, 68, 109, 20, NOW()),
+('10000000-0000-0000-0000-000000000006', 4.55, 19, 77, 8, NOW()),
+('10000000-0000-0000-0000-000000000007', 5.00, 2, 3, 15, NOW()),
+('10000000-0000-0000-0000-000000000008', 4.70, 30, 55, 25, NOW());
+
+INSERT INTO helper_availability_summary VALUES
+('10000000-0000-0000-0000-000000000001', 'AVAILABLE_THIS_WEEK', NOW() + INTERVAL '1 day', 1, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000002', 'AVAILABLE_TODAY', NOW() + INTERVAL '3 hours', 0, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000003', 'AVAILABLE_TOMORROW', NOW() + INTERVAL '1 day', 1, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000004', 'AVAILABLE_THIS_WEEK', NOW() + INTERVAL '4 days', 4, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000005', 'LIMITED', NOW() + INTERVAL '6 days', 6, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000006', 'AVAILABLE_NOW', NOW() + INTERVAL '30 minutes', 0, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000007', 'AVAILABLE_NOW', NOW(), 0, TRUE, NOW()),
+('10000000-0000-0000-0000-000000000008', 'UNAVAILABLE', NULL, NULL, FALSE, NOW());
+
+INSERT INTO helper_service_area (id, helper_id, name, origin, service_radius_miles) VALUES
+('50000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'Lakeview', ST_SetSRID(ST_MakePoint(-87.6533, 41.9400), 4326)::geography, 6),
+('50000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', 'Oak Park', ST_SetSRID(ST_MakePoint(-87.7895, 41.8930), 4326)::geography, 10),
+('50000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000003', 'Evanston', ST_SetSRID(ST_MakePoint(-87.6947, 42.0562), 4326)::geography, 5),
+('50000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000004', 'North Side', ST_SetSRID(ST_MakePoint(-87.6622, 41.9722), 4326)::geography, 8),
+('50000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000005', 'Downtown', ST_SetSRID(ST_MakePoint(-87.6229, 41.8864), 4326)::geography, 12),
+('50000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000006', 'Naperville', ST_SetSRID(ST_MakePoint(-88.1473, 41.7662), 4326)::geography, 4),
+('50000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000007', 'Pending', ST_SetSRID(ST_MakePoint(-87.6505, 41.9227), 4326)::geography, 20),
+('50000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000008', 'Suspended', ST_SetSRID(ST_MakePoint(-87.6505, 41.9227), 4326)::geography, 20);
+
+INSERT INTO helper_service_zip_code VALUES
+('50000000-0000-0000-0000-000000000001', '60657'),
+('50000000-0000-0000-0000-000000000001', '60614'),
+('50000000-0000-0000-0000-000000000002', '60302'),
+('50000000-0000-0000-0000-000000000003', '60201'),
+('50000000-0000-0000-0000-000000000004', '60640'),
+('50000000-0000-0000-0000-000000000005', '60601'),
+('50000000-0000-0000-0000-000000000006', '60540'),
+('50000000-0000-0000-0000-000000000007', '60614'),
+('50000000-0000-0000-0000-000000000008', '60614');
+
+INSERT INTO helper_language VALUES
+('10000000-0000-0000-0000-000000000001', 'en'), ('10000000-0000-0000-0000-000000000001', 'es'),
+('10000000-0000-0000-0000-000000000002', 'en'), ('10000000-0000-0000-0000-000000000002', 'pl'),
+('10000000-0000-0000-0000-000000000003', 'en'), ('10000000-0000-0000-0000-000000000003', 'zh-Hans'),
+('10000000-0000-0000-0000-000000000004', 'en'), ('10000000-0000-0000-0000-000000000005', 'en'),
+('10000000-0000-0000-0000-000000000005', 'fr'), ('10000000-0000-0000-0000-000000000006', 'en'),
+('10000000-0000-0000-0000-000000000007', 'en'), ('10000000-0000-0000-0000-000000000008', 'en');
+
+INSERT INTO helper_skill VALUES
+('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 9),
+('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 8),
+('10000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000001', 12),
+('10000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000005', 10),
+('10000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000006', 9),
+('10000000-0000-0000-0000-000000000003', '30000000-0000-0000-0000-000000000003', 7),
+('10000000-0000-0000-0000-000000000004', '30000000-0000-0000-0000-000000000007', 8),
+('10000000-0000-0000-0000-000000000004', '30000000-0000-0000-0000-000000000008', 6),
+('10000000-0000-0000-0000-000000000005', '30000000-0000-0000-0000-000000000009', 11),
+('10000000-0000-0000-0000-000000000005', '30000000-0000-0000-0000-00000000000a', 10),
+('10000000-0000-0000-0000-000000000006', '30000000-0000-0000-0000-000000000001', 15),
+('10000000-0000-0000-0000-000000000006', '30000000-0000-0000-0000-000000000002', 13),
+('10000000-0000-0000-0000-000000000007', '30000000-0000-0000-0000-000000000001', 3),
+('10000000-0000-0000-0000-000000000008', '30000000-0000-0000-0000-000000000001', 6);
+
+INSERT INTO helper_service
+(id, helper_id, category_id, starting_price_cents, remote_service, in_person_service) VALUES
+('60000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000002', 4500, TRUE, TRUE),
+('60000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-00000000000c', 4000, TRUE, TRUE),
+('60000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000003', 6500, FALSE, TRUE),
+('60000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000004', 5500, FALSE, TRUE),
+('60000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000007', 3500, TRUE, TRUE),
+('60000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-00000000000c', 3000, TRUE, TRUE),
+('60000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000005', 5000, TRUE, TRUE),
+('60000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000006', 6000, FALSE, TRUE),
+('60000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000005', '20000000-0000-0000-0000-000000000008', 7000, TRUE, TRUE),
+('60000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-000000000005', '20000000-0000-0000-0000-00000000000a', 7500, TRUE, TRUE),
+('60000000-0000-0000-0000-00000000000b', '10000000-0000-0000-0000-000000000006', '20000000-0000-0000-0000-000000000001', 2500, TRUE, FALSE),
+('60000000-0000-0000-0000-00000000000c', '10000000-0000-0000-0000-000000000006', '20000000-0000-0000-0000-000000000009', 3000, TRUE, FALSE),
+('60000000-0000-0000-0000-00000000000d', '10000000-0000-0000-0000-000000000007', '20000000-0000-0000-0000-000000000001', 1000, TRUE, TRUE),
+('60000000-0000-0000-0000-00000000000e', '10000000-0000-0000-0000-000000000008', '20000000-0000-0000-0000-000000000001', 1000, TRUE, TRUE);
