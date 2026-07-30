@@ -7,7 +7,7 @@ CREATE TABLE conversations (
 
 CREATE TABLE conversation_participants (
     conversation_id UUID NOT NULL REFERENCES conversations(id),
-    user_id UUID NOT NULL REFERENCES user_identities(id),
+    user_id UUID NOT NULL REFERENCES user_identity(id),
     joined_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     last_read_sequence_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (conversation_id, user_id)
@@ -16,7 +16,7 @@ CREATE TABLE conversation_participants (
 CREATE TABLE chat_messages (
     id UUID PRIMARY KEY,
     conversation_id UUID NOT NULL REFERENCES conversations(id),
-    sender_user_id UUID REFERENCES user_identities(id),
+    sender_user_id UUID REFERENCES user_identity(id),
     client_message_id VARCHAR(128) NOT NULL,
     sequence_id BIGINT NOT NULL,
     message_type VARCHAR(30) NOT NULL,
@@ -36,15 +36,15 @@ CREATE TABLE message_attachments (
 
 CREATE TABLE message_receipts (
     message_id UUID NOT NULL REFERENCES chat_messages(id),
-    user_id UUID NOT NULL REFERENCES user_identities(id),
+    user_id UUID NOT NULL REFERENCES user_identity(id),
     delivered_at TIMESTAMPTZ,
     read_at TIMESTAMPTZ,
     PRIMARY KEY (message_id, user_id)
 );
 
 CREATE TABLE user_blocks (
-    blocker_user_id UUID NOT NULL REFERENCES user_identities(id),
-    blocked_user_id UUID NOT NULL REFERENCES user_identities(id),
+    blocker_user_id UUID NOT NULL REFERENCES user_identity(id),
+    blocked_user_id UUID NOT NULL REFERENCES user_identity(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (blocker_user_id, blocked_user_id),
     CHECK (blocker_user_id <> blocked_user_id)
@@ -53,10 +53,13 @@ CREATE TABLE user_blocks (
 CREATE TABLE message_reports (
     id UUID PRIMARY KEY,
     message_id UUID NOT NULL REFERENCES chat_messages(id),
-    reporter_user_id UUID NOT NULL REFERENCES user_identities(id),
+    reporter_user_id UUID NOT NULL REFERENCES user_identity(id),
     reason TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX messages_conversation_sequence_idx ON chat_messages(conversation_id, sequence_id DESC);
-CREATE INDEX conversations_booking_idx ON conversations(booking_id);
+CREATE INDEX messages_conversation_sequence_idx
+    ON chat_messages(conversation_id, sequence_id DESC);
+
+CREATE INDEX conversations_booking_idx
+    ON conversations(booking_id);

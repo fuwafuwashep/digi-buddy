@@ -1,6 +1,6 @@
 CREATE TABLE push_device_tokens (
     id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES user_identities(id),
+    user_id UUID NOT NULL REFERENCES user_identity(id),
     device_id VARCHAR(200) NOT NULL,
     platform VARCHAR(20) NOT NULL,
     app_environment VARCHAR(30) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE push_device_tokens (
 );
 
 CREATE TABLE notification_preferences (
-    user_id UUID PRIMARY KEY REFERENCES user_identities(id),
+    user_id UUID PRIMARY KEY REFERENCES user_identity(id),
     security_enabled BOOLEAN NOT NULL DEFAULT TRUE,
     bookings_enabled BOOLEAN NOT NULL DEFAULT TRUE,
     messages_enabled BOOLEAN NOT NULL DEFAULT TRUE,
@@ -24,7 +24,7 @@ CREATE TABLE notification_preferences (
 
 CREATE TABLE notification_deliveries (
     id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES user_identities(id),
+    user_id UUID NOT NULL REFERENCES user_identity(id),
     device_token_id UUID REFERENCES push_device_tokens(id),
     event_type VARCHAR(80) NOT NULL,
     provider_message_id TEXT,
@@ -34,4 +34,5 @@ CREATE TABLE notification_deliveries (
     delivered_at TIMESTAMPTZ
 );
 
-CREATE INDEX notification_delivery_user_created_idx ON notification_deliveries(user_id, created_at DESC);
+CREATE INDEX notification_delivery_user_created_idx
+    ON notification_deliveries(user_id, created_at DESC);

@@ -1,8 +1,8 @@
 CREATE TABLE bookings (
     id UUID PRIMARY KEY,
-    customer_user_id UUID NOT NULL REFERENCES user_identities(id),
-    helper_profile_id UUID NOT NULL REFERENCES helper_profiles(id),
-    service_category_id UUID NOT NULL REFERENCES service_categories(id),
+    customer_user_id UUID NOT NULL REFERENCES user_identity(id),
+    helper_profile_id UUID NOT NULL REFERENCES helper_profile(id),
+    service_category_id UUID NOT NULL REFERENCES service_category(id),
     service_mode VARCHAR(20) NOT NULL CHECK (service_mode IN ('REMOTE', 'IN_PERSON')),
     pricing_type VARCHAR(30) NOT NULL CHECK (pricing_type IN ('FIXED', 'HOURLY', 'QUOTE_REQUIRED')),
     problem_description TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE booking_status_history (
     booking_id UUID NOT NULL REFERENCES bookings(id),
     from_status VARCHAR(50),
     to_status VARCHAR(50) NOT NULL,
-    actor_user_id UUID REFERENCES user_identities(id),
+    actor_user_id UUID REFERENCES user_identity(id),
     actor_type VARCHAR(20) NOT NULL,
     occurred_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     audit_detail JSONB NOT NULL DEFAULT '{}'::jsonb
@@ -75,7 +75,7 @@ CREATE TABLE booking_change_orders (
 CREATE TABLE booking_cancellations (
     id UUID PRIMARY KEY,
     booking_id UUID NOT NULL REFERENCES bookings(id),
-    canceled_by_user_id UUID REFERENCES user_identities(id),
+    canceled_by_user_id UUID REFERENCES user_identity(id),
     reason TEXT NOT NULL,
     fee_cents INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

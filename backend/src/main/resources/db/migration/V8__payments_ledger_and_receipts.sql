@@ -1,7 +1,7 @@
 CREATE TABLE payments (
     id UUID PRIMARY KEY,
     booking_id UUID NOT NULL REFERENCES bookings(id),
-    customer_user_id UUID NOT NULL REFERENCES user_identities(id),
+    customer_user_id UUID NOT NULL REFERENCES user_identity(id),
     provider VARCHAR(30) NOT NULL,
     provider_payment_id TEXT NOT NULL,
     status VARCHAR(40) NOT NULL,
@@ -42,5 +42,8 @@ CREATE TABLE payment_receipts (
     UNIQUE (booking_id, payment_id)
 );
 
-CREATE INDEX payments_booking_idx ON payments(booking_id);
-CREATE INDEX ledger_payment_created_idx ON payment_ledger_entries(payment_id, created_at);
+CREATE INDEX payments_booking_idx
+    ON payments(booking_id);
+
+CREATE INDEX ledger_payment_created_idx
+    ON payment_ledger_entries(payment_id, created_at);
