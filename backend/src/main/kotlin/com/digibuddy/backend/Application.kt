@@ -15,6 +15,7 @@ import com.digibuddy.backend.chat.chatRoutes
 import com.digibuddy.backend.customer.CustomerProfileService
 import com.digibuddy.backend.customer.InMemoryCustomerProfileRepository
 import com.digibuddy.backend.customer.LocalDevelopmentProfileObjectStorage
+import com.digibuddy.backend.customer.PostgresCustomerProfileRepository
 import com.digibuddy.backend.customer.customerProfileRoutes
 import com.digibuddy.backend.helper.HelperApplicationService
 import com.digibuddy.backend.helper.HelperStartupService
@@ -80,8 +81,19 @@ fun Application.configuredModule() {
             (catalogRepository as? InMemoryHelperCatalogRepository)?.updateHelperStatus(userId, status)
         },
     )
+    val customerProfileRepository =
+        if (repositoryName == "postgresql") {
+            PostgresCustomerProfileRepository(
+                database.property("jdbcUrl").getString(),
+                database.property("username").getString(),
+                database.property("password").getString(),
+            )
+        } else {
+            InMemoryCustomerProfileRepository()
+        }
+
     val profiles = CustomerProfileService(
-        InMemoryCustomerProfileRepository(),
+        customerProfileRepository,
         authService,
         LocalDevelopmentProfileObjectStorage(),
     )
