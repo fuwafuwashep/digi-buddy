@@ -5,6 +5,8 @@ import com.digibuddy.backend.auth.authenticationRoutes
 import com.digibuddy.backend.auth.createDefaultAuthService
 import com.digibuddy.backend.auth.installAuthentication
 import com.digibuddy.backend.booking.BookingService
+import com.digibuddy.backend.booking.InMemoryBookingRepository
+import com.digibuddy.backend.booking.PostgresBookingRepository
 import com.digibuddy.backend.booking.bookingRoutes
 import com.digibuddy.backend.catalog.HelperCatalogService
 import com.digibuddy.backend.catalog.InMemoryHelperCatalogRepository
@@ -98,6 +100,18 @@ fun Application.configuredModule() {
         LocalDevelopmentProfileObjectStorage(),
     )
     val catalog = HelperCatalogService(catalogRepository)
+
+    val bookingRepository =
+        if (repositoryName == "postgresql") {
+            PostgresBookingRepository(
+                database.property("jdbcUrl").getString(),
+                database.property("username").getString(),
+                database.property("password").getString(),
+            )
+        } else {
+            InMemoryBookingRepository()
+        }
+
     val chat = ChatService(
         helperAccountResolver = { helperId ->
             runCatching { catalog.accountReference(helperId) }.getOrNull()?.let { it.userId to it.displayName }
@@ -105,6 +119,7 @@ fun Application.configuredModule() {
         customerDisplayName = profiles::publicDisplayName,
     )
     val bookings = BookingService(
+        repository = bookingRepository,
         helperAccountResolver = { helperId ->
             runCatching { catalog.accountReference(helperId) }.getOrNull()?.let { it.userId to it.displayName }
         },
