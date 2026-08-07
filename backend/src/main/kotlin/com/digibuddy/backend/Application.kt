@@ -13,6 +13,8 @@ import com.digibuddy.backend.catalog.InMemoryHelperCatalogRepository
 import com.digibuddy.backend.catalog.PostgresHelperCatalogRepository
 import com.digibuddy.backend.catalog.helperCatalogRoutes
 import com.digibuddy.backend.chat.ChatService
+import com.digibuddy.backend.chat.InMemoryChatRepository
+import com.digibuddy.backend.chat.PostgresChatRepository
 import com.digibuddy.backend.chat.chatRoutes
 import com.digibuddy.backend.customer.CustomerProfileService
 import com.digibuddy.backend.customer.InMemoryCustomerProfileRepository
@@ -110,6 +112,17 @@ fun Application.configuredModule() {
             )
         } else {
             InMemoryBookingRepository()
+        }
+
+    val chatRepository =
+        if (repositoryName == "postgresql") {
+            PostgresChatRepository(
+                database.property("jdbcUrl").getString(),
+                database.property("username").getString(),
+                database.property("password").getString(),
+            )
+        } else {
+            InMemoryChatRepository()
         }
 
     val chat = ChatService(
