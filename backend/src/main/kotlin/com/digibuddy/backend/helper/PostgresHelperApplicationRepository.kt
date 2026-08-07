@@ -42,6 +42,39 @@ class PostgresHelperApplicationRepository(jdbcUrl: String, username: String, pas
         }
     }
 
+    override fun listByStatus(
+        status: HelperAccountStatus,
+    ): List<HelperApplicationRecord> {
+        val userIds =
+            dataSource.connection.use { connection ->
+                connection.prepareStatement(
+                    """
+                SELECT user_id
+                FROM helper_application
+                WHERE status = ?
+                ORDER BY submitted_at NULLS LAST, updated_at
+                """.trimIndent(),
+                ).use { statement ->
+                    statement.setString(1, status.name)
+
+                    statement.executeQuery().use { results ->
+                        buildList {
+                            while (results.next()) {
+                                add(
+                                    results.getObject(
+                                        "user_id",
+                                        UUID::class.java,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+        return userIds.mapNotNull(::findByUser)
+    }
+
     override fun create(application: HelperApplicationRecord): HelperApplicationRecord =
         dataSource.connection.use { connection ->
             connection.autoCommit = false

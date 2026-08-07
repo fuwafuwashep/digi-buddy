@@ -7,6 +7,10 @@ import java.util.UUID
 interface HelperApplicationRepository {
     fun findByUser(userId: UUID): HelperApplicationRecord?
 
+    fun listByStatus(
+        status: HelperAccountStatus,
+    ): List<HelperApplicationRecord> = emptyList()
+
     fun create(application: HelperApplicationRecord): HelperApplicationRecord
 
     fun saveStep(application: HelperApplicationRecord, step: HelperStepRecord): HelperApplicationRecord
@@ -33,6 +37,14 @@ class InMemoryHelperApplicationRepository : HelperApplicationRepository {
 
     @Synchronized
     override fun findByUser(userId: UUID): HelperApplicationRecord? = userApplications[userId]?.let(applications::get)
+
+    @Synchronized
+    override fun listByStatus(
+        status: HelperAccountStatus,
+    ): List<HelperApplicationRecord> =
+        applications.values
+            .filter { it.status == status }
+            .sortedBy { it.updatedAt }
 
     @Synchronized
     override fun create(application: HelperApplicationRecord): HelperApplicationRecord {

@@ -246,6 +246,11 @@ class HelperApplicationService(
         return response(saved)
     }
 
+    fun applicationsUnderReview(): List<HelperApplicationRecord> =
+        repository.listByStatus(
+            HelperAccountStatus.UNDER_REVIEW,
+        )
+
     fun review(
         applicationUserId: UUID,
         target: HelperAccountStatus,

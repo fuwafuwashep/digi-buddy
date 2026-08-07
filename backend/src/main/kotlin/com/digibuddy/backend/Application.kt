@@ -22,6 +22,7 @@ import com.digibuddy.backend.customer.LocalDevelopmentProfileObjectStorage
 import com.digibuddy.backend.customer.PostgresCustomerProfileRepository
 import com.digibuddy.backend.customer.customerProfileRoutes
 import com.digibuddy.backend.helper.HelperApplicationService
+import com.digibuddy.backend.helper.helperOperationsRoutes
 import com.digibuddy.backend.helper.HelperStartupService
 import com.digibuddy.backend.helper.InMemoryHelperApplicationRepository
 import com.digibuddy.backend.helper.PostgresHelperApplicationRepository
@@ -54,6 +55,23 @@ fun main(args: Array<String>) {
 @Suppress("LongMethod")
 fun Application.configuredModule() {
     val authService = createDefaultAuthService(environment.config)
+    val helperApprovalToken =
+        environment.config
+            .propertyOrNull(
+                "digibuddy.helperApprovalToken",
+            )
+            ?.getString()
+
+    val allowDevelopmentHelperApproval =
+        environment.config
+            .propertyOrNull(
+                "digibuddy.allowDevelopmentHelperApproval",
+            )
+            ?.getString()
+            ?.equals(
+                "true",
+                ignoreCase = true,
+            ) == true
     val repositoryName =
         environment.config.propertyOrNull("digibuddy.authentication.repository")?.getString() ?: "memory"
     val database = environment.config.config("digibuddy.database")
@@ -155,7 +173,9 @@ fun Application.configuredModule() {
             catalog = catalog,
             helperApplications = helperApplicationService,
             allowDevelopmentHelperApproval =
-            environment.config.propertyOrNull("digibuddy.environment")?.getString() == "local-development",
+                allowDevelopmentHelperApproval,
+            helperApprovalToken =
+                helperApprovalToken,
             bookings = bookings,
             chat = chat,
         ),
@@ -209,6 +229,7 @@ private data class RuntimeServices(
     val catalog: HelperCatalogService,
     val helperApplications: HelperApplicationService,
     val allowDevelopmentHelperApproval: Boolean = false,
+    val helperApprovalToken: String? = null,
     val bookings: BookingService = BookingService(),
     val chat: ChatService = ChatService(),
     val payments: PaymentService? = null,
@@ -249,6 +270,7 @@ private fun Application.module(services: RuntimeServices) {
         helperCatalogRoutes(services.catalog)
         helperStartupRoutes(HelperStartupService(services.auth, services.catalog, services.helperApplications))
         helperApplicationRoutes(services.helperApplications, services.allowDevelopmentHelperApproval)
+        helperOperationsRoutes(services.helperApplications, services.helperApprovalToken,)
         bookingRoutes(services.bookings)
         chatRoutes(services.chat)
         paymentRoutes(resolvedPaymentService)
