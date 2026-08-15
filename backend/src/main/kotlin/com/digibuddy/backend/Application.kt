@@ -144,6 +144,7 @@ fun Application.configuredModule() {
         }
 
     val chat = ChatService(
+        repository = chatRepository,
         helperAccountResolver = { helperId ->
             runCatching { catalog.accountReference(helperId) }.getOrNull()?.let { it.userId to it.displayName }
         },
