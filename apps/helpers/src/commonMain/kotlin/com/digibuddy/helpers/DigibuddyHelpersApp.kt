@@ -44,6 +44,9 @@ import com.digibuddy.shared.networking.BookingApiClient
 import com.digibuddy.shared.networking.ChatApiClient
 import com.digibuddy.shared.networking.HelperAccountApiClient
 import org.jetbrains.compose.resources.painterResource
+import com.digibuddy.shared.helper.dashboard.StaffApprovalCoordinator
+import com.digibuddy.shared.helper.dashboard.StaffApprovalPage
+import com.digibuddy.shared.networking.StaffApiClient
 
 @Composable
 fun DigibuddyHelpersApp(
@@ -59,20 +62,64 @@ fun DigibuddyHelpersApp(
             if (authenticated == null) {
                 AuthenticationScreen(
                     state = authenticationState,
-                    coordinator = authenticationCoordinator,
-                    brand = { HelperLoginBrand() },
+                    coordinator =
+                        authenticationCoordinator,
+                    showStaffLogin = true,
+                    brand = {
+                        HelperLoginBrand()
+                    },
+                )
+            } else if (
+                "STAFF" in authenticated.roles
+            ) {
+                StaffAuthenticatedRoute(
+                    accessToken =
+                        authenticated.accessToken,
+                    onSignOut = {
+                        authenticationCoordinator
+                            .logout()
+                    },
                 )
             } else {
                 HelperAuthenticatedRouter(
-                    accessToken = authenticated.accessToken,
-                    onSignOut = { authenticationCoordinator.logout() },
-                    allowDevelopmentWorkspacePreview = allowDevelopmentWorkspacePreview,
+                    accessToken =
+                        authenticated.accessToken,
+                    onSignOut = {
+                        authenticationCoordinator
+                            .logout()
+                    },
+                    allowDevelopmentWorkspacePreview =
+                        allowDevelopmentWorkspacePreview,
                 )
             }
         }
     }
 }
+@Composable
+private fun StaffAuthenticatedRoute(
+    accessToken: String,
+    onSignOut: () -> Unit,
+) {
+    val coordinator =
+        remember(accessToken) {
+            StaffApprovalCoordinator(
+                StaffApiClient
+                    .forLocalDevelopment(),
+                accessToken,
+            )
+        }
 
+    DisposableEffect(coordinator) {
+        onDispose(
+            coordinator::close,
+        )
+    }
+
+    StaffApprovalPage(
+        coordinator = coordinator,
+        onSignOut = onSignOut,
+    )
+}
 @Composable
 private fun HelperAuthenticatedRouter(
     accessToken: String,

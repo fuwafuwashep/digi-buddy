@@ -48,6 +48,13 @@ data class AddEmailCredentialRequest(val email: String, val password: String)
 data class EmailPasswordLoginRequest(val email: String, val password: String)
 
 @Serializable
+data class StaffEmailPasswordLoginRequest(
+    val email: String,
+    val password: String,
+    val deviceId: String,
+    val deviceName: String,
+)
+@Serializable
 data class AuthenticationMessageResponse(val message: String)
 
 @Serializable

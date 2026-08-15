@@ -23,6 +23,7 @@ import com.digibuddy.backend.customer.PostgresCustomerProfileRepository
 import com.digibuddy.backend.customer.customerProfileRoutes
 import com.digibuddy.backend.helper.HelperApplicationService
 import com.digibuddy.backend.helper.helperOperationsRoutes
+import com.digibuddy.backend.helper.staffHelperOperationsRoutes
 import com.digibuddy.backend.helper.HelperStartupService
 import com.digibuddy.backend.helper.InMemoryHelperApplicationRepository
 import com.digibuddy.backend.helper.PostgresHelperApplicationRepository
@@ -271,7 +272,8 @@ private fun Application.module(services: RuntimeServices) {
         helperCatalogRoutes(services.catalog)
         helperStartupRoutes(HelperStartupService(services.auth, services.catalog, services.helperApplications))
         helperApplicationRoutes(services.helperApplications, services.allowDevelopmentHelperApproval)
-        helperOperationsRoutes(services.helperApplications, services.helperApprovalToken,)
+        helperOperationsRoutes(services.helperApplications, services.helperApprovalToken)
+        staffHelperOperationsRoutes(services.helperApplications, services.auth)
         bookingRoutes(services.bookings)
         chatRoutes(services.chat)
         paymentRoutes(resolvedPaymentService)

@@ -231,6 +231,169 @@ class AuthService(
         audit(userId, null, "HELPER_ROLE_GRANTED", null, null, "SUCCEEDED")
     }
 
+    fun bootstrapStaffAccount(
+        email: String?,
+        password: String?,
+    ) {
+        if (email.isNullOrBlank() && password.isNullOrBlank()) {
+            return
+        }
+
+        val configuredEmail =
+            requireNotNull(email?.takeIf { it.isNotBlank() }) {
+                "DIGIBUDDY_ADMIN_EMAIL must be supplied when DIGIBUDDY_ADMIN_PASSWORD is configured."
+            }
+
+        val configuredPassword =
+            requireNotNull(password?.takeIf { it.isNotBlank() }) {
+                "DIGIBUDDY_ADMIN_PASSWORD must be supplied when DIGIBUDDY_ADMIN_EMAIL is configured."
+            }
+
+        require(configuredPassword.length >= MIN_PASSWORD_LENGTH) {
+            "DIGIBUDDY_ADMIN_PASSWORD must contain at least $MIN_PASSWORD_LENGTH characters."
+        }
+
+        val normalizedEmail = normalizeEmail(configuredEmail)
+        val now = timeSource.now()
+
+        val deterministicId =
+            UUID.nameUUIDFromBytes(
+                "digibuddy-staff:$normalizedEmail".toByteArray(),
+            )
+
+        val syntheticPhone =
+            "staff-" +
+                deterministicId
+                    .toString()
+                    .replace("-", "")
+                    .take(12)
+
+        val existingCredential =
+            repository.findEmailCredential(normalizedEmail)
+
+        val user =
+            existingCredential
+                ?.let { repository.findUser(it.userId) }
+                ?: repository.findUser(deterministicId)
+                ?: repository.findUserByPhone(syntheticPhone)
+                ?: UserIdentity(
+                    id = deterministicId,
+                    phoneE164 = syntheticPhone,
+                    phoneFingerprint =
+                        fingerprinter.fingerprint(syntheticPhone),
+                    roles = setOf("STAFF"),
+                    createdAt = now,
+                ).also(repository::createUser)
+
+        repository.grantRole(
+            user.id,
+            "STAFF",
+            now,
+        )
+
+        val chars =
+            configuredPassword.toCharArray()
+
+        try {
+            repository.saveEmailCredential(
+                EmailCredential(
+                    userId = user.id,
+                    emailNormalized = normalizedEmail,
+                    passwordHash =
+                        passwordHasher.hash(chars),
+                ),
+            )
+        } finally {
+            chars.fill('\u0000')
+        }
+
+        audit(
+            user.id,
+            null,
+            "STAFF_BOOTSTRAP",
+            fingerprinter.fingerprint(normalizedEmail),
+            null,
+            "SUCCEEDED",
+        )
+    }
+
+    fun staffPasswordLogin(
+        email: String,
+        password: String,
+        deviceId: String,
+        deviceName: String,
+        sourceIp: String,
+    ): AuthenticationTokensResponse {
+        val normalizedEmail =
+            normalizeEmail(email)
+
+        val credential =
+            repository.findEmailCredential(
+                normalizedEmail,
+            )
+
+        val chars =
+            password.toCharArray()
+
+        val passwordValid =
+            try {
+                credential != null &&
+                    passwordHasher.verify(
+                        chars,
+                        credential.passwordHash,
+                    )
+            } finally {
+                chars.fill('\u0000')
+            }
+
+        val user =
+            credential
+                ?.takeIf { passwordValid }
+                ?.let {
+                    repository.findUser(it.userId)
+                }
+
+        if (
+            user == null ||
+            "STAFF" !in user.roles
+        ) {
+            audit(
+                null,
+                null,
+                "STAFF_EMAIL_PASSWORD_LOGIN",
+                fingerprinter.fingerprint(
+                    normalizedEmail,
+                ),
+                fingerprinter.fingerprint(sourceIp),
+                "DENIED",
+            )
+
+            throw AuthenticationException(
+                "LOGIN_FAILED",
+                GENERIC_LOGIN_FAILURE,
+                401,
+            )
+        }
+
+        val tokens =
+            issueSession(
+                user,
+                sanitizeDeviceId(deviceId),
+                sanitizeDeviceName(deviceName),
+            )
+
+        audit(
+            user.id,
+            UUID.fromString(tokens.sessionId),
+            "STAFF_EMAIL_PASSWORD_LOGIN",
+            user.phoneFingerprint,
+            fingerprinter.fingerprint(sourceIp),
+            "SUCCEEDED",
+        )
+
+        return tokens
+    }
+
     fun addEmailCredential(principal: AuthenticatedPrincipal, email: String, password: String) {
         val normalizedEmail = normalizeEmail(email)
         if (password.length < MIN_PASSWORD_LENGTH) {

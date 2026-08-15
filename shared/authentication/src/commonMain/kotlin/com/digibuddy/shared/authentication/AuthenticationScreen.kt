@@ -35,6 +35,7 @@ fun AuthenticationScreen(
     state: AuthenticationState,
     coordinator: AuthenticationCoordinator,
     modifier: Modifier = Modifier,
+    showStaffLogin: Boolean = false,
     brand: @Composable () -> Unit = {
         Text("Digibuddy", style = MaterialTheme.typography.headlineLarge)
     },
@@ -47,10 +48,11 @@ fun AuthenticationScreen(
         brand()
         Spacer(Modifier.height(24.dp))
         when (state) {
-            AuthenticationState.EnterPhone -> EnterPhoneScreen(coordinator)
+            AuthenticationState.EnterPhone -> EnterPhoneScreen(coordinator, showStaffLogin)
             is AuthenticationState.ConfirmPhone -> ConfirmPhoneScreen(state, coordinator)
             is AuthenticationState.EnterCode -> VerificationCodeScreen(state, coordinator)
             is AuthenticationState.EmailPassword -> EmailPasswordScreen(state, coordinator)
+            is AuthenticationState.StaffEmailPassword -> StaffEmailPasswordScreen(state, coordinator,)
             is AuthenticationState.ExpiredCode -> MessageScreen(
                 title = "Code expired",
                 message = "Request a new code to continue.",
@@ -88,7 +90,7 @@ fun AuthenticationScreen(
 }
 
 @Composable
-private fun EnterPhoneScreen(coordinator: AuthenticationCoordinator) {
+private fun EnterPhoneScreen(coordinator: AuthenticationCoordinator, showStaffLogin: Boolean) {
     var phone by remember { mutableStateOf("") }
     Text("Enter your phone number", style = MaterialTheme.typography.headlineSmall)
     Text("We will text you a one-time code.")
@@ -107,6 +109,14 @@ private fun EnterPhoneScreen(coordinator: AuthenticationCoordinator) {
         modifier = Modifier.fillMaxWidth(),
     ) { Text("Continue") }
     TextButton(onClick = coordinator::showEmailPassword) { Text("Sign in with email and password") }
+    if (showStaffLogin) {
+        TextButton(
+            onClick =
+                coordinator::showStaffEmailPassword,
+        ) {
+            Text("Admin sign in")
+        }
+    }
 }
 
 @Composable
@@ -191,6 +201,109 @@ private fun EmailPasswordScreen(state: AuthenticationState.EmailPassword, coordi
         modifier = Modifier.fillMaxWidth(),
     ) { Text("Continue") }
     TextButton(onClick = coordinator::backToPhone) { Text("Use phone instead") }
+}
+
+@Composable
+private fun StaffEmailPasswordScreen(
+    state:
+    AuthenticationState.StaffEmailPassword,
+    coordinator: AuthenticationCoordinator,
+) {
+    var email by remember {
+        mutableStateOf(
+            "admin@mydigi-buddy.com",
+        )
+    }
+
+    var password by remember {
+        mutableStateOf("")
+    }
+
+    Text(
+        "Admin sign in",
+        style =
+            MaterialTheme.typography
+                .headlineSmall,
+    )
+
+    Text(
+        "Staff account access.",
+    )
+
+    state.errorMessage?.let {
+        Text(
+            it,
+            color =
+                MaterialTheme.colorScheme
+                    .error,
+        )
+    }
+
+    Spacer(
+        Modifier.height(16.dp),
+    )
+
+    OutlinedTextField(
+        value = email,
+        onValueChange = {
+            email = it
+        },
+        label = {
+            Text("Admin email")
+        },
+        singleLine = true,
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType =
+                    KeyboardType.Email,
+            ),
+        modifier =
+            Modifier.fillMaxWidth(),
+    )
+
+    OutlinedTextField(
+        value = password,
+        onValueChange = {
+            password = it
+        },
+        label = {
+            Text("Password")
+        },
+        singleLine = true,
+        visualTransformation =
+            PasswordVisualTransformation(),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType =
+                    KeyboardType.Password,
+            ),
+        modifier =
+            Modifier.fillMaxWidth(),
+    )
+
+    Button(
+        onClick = {
+            coordinator
+                .startStaffEmailPasswordLogin(
+                    email,
+                    password,
+                )
+        },
+        enabled =
+            email.isNotBlank() &&
+                password.isNotBlank(),
+        modifier =
+            Modifier.fillMaxWidth(),
+    ) {
+        Text("Sign in")
+    }
+
+    TextButton(
+        onClick =
+            coordinator::backToPhone,
+    ) {
+        Text("Back")
+    }
 }
 
 @Composable

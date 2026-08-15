@@ -8,6 +8,7 @@ import com.digibuddy.shared.contracts.NormalizePhoneRequest
 import com.digibuddy.shared.contracts.RefreshTokenRequest
 import com.digibuddy.shared.contracts.StartPhoneVerificationRequest
 import com.digibuddy.shared.contracts.VerifyPhoneCodeRequest
+import com.digibuddy.shared.contracts.StaffEmailPasswordLoginRequest
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -81,6 +82,20 @@ fun Route.authenticationRoutes(authService: AuthService) {
         post("/email/login") {
             val request = call.receive<EmailPasswordLoginRequest>()
             call.respond(authService.startEmailPasswordLogin(request.email, request.password, call.sourceIp()))
+        }
+        post("/staff/login") {
+            val request =
+                call.receive<StaffEmailPasswordLoginRequest>()
+
+            call.respond(
+                authService.staffPasswordLogin(
+                    email = request.email,
+                    password = request.password,
+                    deviceId = request.deviceId,
+                    deviceName = request.deviceName,
+                    sourceIp = call.sourceIp(),
+                ),
+            )
         }
         post("/email/verify") {
             val request = call.receive<VerifyPhoneCodeRequest>()

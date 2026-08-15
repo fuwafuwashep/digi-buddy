@@ -12,6 +12,7 @@ import com.digibuddy.shared.contracts.RefreshTokenRequest
 import com.digibuddy.shared.contracts.StartPhoneVerificationRequest
 import com.digibuddy.shared.contracts.VerificationChallengeResponse
 import com.digibuddy.shared.contracts.VerifyPhoneCodeRequest
+import com.digibuddy.shared.contracts.StaffEmailPasswordLoginRequest
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
@@ -50,6 +51,12 @@ class AuthenticationApiClient(private val networkClient: DigibuddyNetworkClient,
     suspend fun startEmailPasswordLogin(email: String, password: String): VerificationChallengeResponse = execute {
         networkClient.httpClient.post("$authUrl/email/login") {
             jsonBody(EmailPasswordLoginRequest(email, password))
+        }.body()
+    }
+
+    suspend fun staffLogin(email: String, password: String, deviceId: String, deviceName: String, ): AuthenticationTokensResponse = execute {
+        networkClient.httpClient.post("$authUrl/staff/login") {
+            jsonBody(StaffEmailPasswordLoginRequest(email = email, password = password, deviceId = deviceId, deviceName = deviceName,),)
         }.body()
     }
 

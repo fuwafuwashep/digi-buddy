@@ -58,11 +58,27 @@ fun createDefaultAuthService(config: ApplicationConfig): AuthService {
         )
         else -> error("Unsupported AUTH_OTP_PROVIDER: $providerName")
     }
-    return AuthService(
-        repository = repository,
-        otpProvider = provider,
-        tokenHasher = tokenHasher,
-        fingerprinter = IdentifierFingerprinter(identifierKey),
-        passwordHasher = PasswordHasher(),
+
+    val service =
+        AuthService(
+            repository = repository,
+            otpProvider = provider,
+            tokenHasher = tokenHasher,
+            fingerprinter =
+                IdentifierFingerprinter(identifierKey),
+            passwordHasher = PasswordHasher(),
+        )
+
+    service.bootstrapStaffAccount(
+        email =
+            authConfig
+                .propertyOrNull("staffEmail")
+                ?.getString(),
+        password =
+            authConfig
+                .propertyOrNull("staffPassword")
+                ?.getString(),
     )
+
+    return service
 }
