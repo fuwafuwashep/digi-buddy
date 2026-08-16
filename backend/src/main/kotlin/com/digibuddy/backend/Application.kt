@@ -11,6 +11,7 @@ import com.digibuddy.backend.booking.bookingRoutes
 import com.digibuddy.backend.catalog.HelperCatalogService
 import com.digibuddy.backend.catalog.InMemoryHelperCatalogRepository
 import com.digibuddy.backend.catalog.PostgresHelperCatalogRepository
+import com.digibuddy.backend.catalog.PostgresHelperCatalogSync
 import com.digibuddy.backend.catalog.helperCatalogRoutes
 import com.digibuddy.backend.chat.ChatService
 import com.digibuddy.backend.chat.InMemoryChatRepository
@@ -85,6 +86,16 @@ fun Application.configuredModule() {
     } else {
         InMemoryHelperCatalogRepository()
     }
+    val postgresCatalogSync =
+        if (repositoryName == "postgresql") {
+            PostgresHelperCatalogSync(
+                database.property("jdbcUrl").getString(),
+                database.property("username").getString(),
+                database.property("password").getString(),
+            )
+        } else {
+            null
+        }
     val helperApplicationRepository = if (repositoryName == "postgresql") {
         PostgresHelperApplicationRepository(
             database.property("jdbcUrl").getString(),
@@ -94,16 +105,37 @@ fun Application.configuredModule() {
     } else {
         InMemoryHelperApplicationRepository()
     }
-    val helperApplicationService = HelperApplicationService(
-        helperApplicationRepository,
-        authService,
-        onApproved = { userId, profile ->
-            (catalogRepository as? InMemoryHelperCatalogRepository)?.upsertApprovedHelper(userId, profile)
-        },
-        onStatusChanged = { userId, status ->
-            (catalogRepository as? InMemoryHelperCatalogRepository)?.updateHelperStatus(userId, status)
-        },
-    )
+    val helperApplicationService = HelperApplicationService(helperApplicationRepository, authService, onApproved = { userId, profile ->
+                if (postgresCatalogSync != null) {
+                    postgresCatalogSync
+                        .upsertApprovedHelper(userId, profile)
+                } else {
+                    (
+                        catalogRepository
+                            as? InMemoryHelperCatalogRepository
+                        )
+                        ?.upsertApprovedHelper(userId, profile)
+                }
+            },
+            onStatusChanged = { userId, status ->
+                if (postgresCatalogSync != null) {
+                    postgresCatalogSync
+                        .updateHelperStatus(
+                            userId,
+                            status,
+                        )
+                } else {
+                    (
+                        catalogRepository
+                            as? InMemoryHelperCatalogRepository
+                        )
+                        ?.updateHelperStatus(
+                            userId,
+                            status,
+                        )
+                }
+            },
+        )
     val customerProfileRepository =
         if (repositoryName == "postgresql") {
             PostgresCustomerProfileRepository(
